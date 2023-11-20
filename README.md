@@ -26,7 +26,7 @@ Puedes ver la documentanción para instalar el operador [aquí](https://cert-man
 $ oc new-project cert-manager-operator
 ~~~
 
-2 . Creamos un opertor group para la instalación de los operadores.
+2 . Creamos un operator group para la instalación de los operadores.
 
 ~~~
 apiVersion: operators.coreos.com/v1
@@ -319,7 +319,7 @@ serviceaccount/issuer created
 
 Al crear la service account se nos ha creado un token que utilizaremos después para crear el objeto issuer del cert-manager
 
-
+~~~
 $ oc get secrets
 NAME                       TYPE                                  DATA   AGE
 ....
