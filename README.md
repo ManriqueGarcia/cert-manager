@@ -131,7 +131,7 @@ hashicorp/vault-secrets-operator	0.4.0        	0.4.0      	Official Vault Secret
 3 . Creamos un nuevo namespace para vault
 
 ~~~
-$ oc create new-project vault
+$ oc new-project vault
 ~~~
 
 
