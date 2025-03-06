@@ -413,7 +413,7 @@ Events:
 
 
 
-Por último podmeos extraer nuestro certificado y revisar su configuración
+Por último podemos extraer nuestro certificado y revisar su configuración
 
 ~~~
 $ oc get secrets example-com-tls -o yaml|grep tls.crt|awk '{print $2}' |base64 -d |openssl x509 -text -noout
