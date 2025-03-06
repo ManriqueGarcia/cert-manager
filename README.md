@@ -205,8 +205,8 @@ Success! Enabled the pki secrets engine at: pki/
 
 ~~~
 / $ vault write pki/root/generate/internal \
->     common_name=example.com \
->     ttl=8760h
+     common_name=example.com \
+     ttl=8760h
 ~~~
 
 3 . Configuramos los endpoints de emisión de certificados y de revocación de certificados de nuestro pki
@@ -223,7 +223,7 @@ issuing_certificates       [http://vault.default:8200/v1/pki/ca]
 ocsp_servers               []
 ~~~
 
-4 . Configuramos un role que llamaremos example-dot-com que habilita la creación de certificados para el dominio example.com y sus subdominioes. Este role es un nombre lógico que mapea con la política usada para generar las credenciales.
+4 . Configuramos un role que llamaremos *example-dot-com* que habilita la creación de certificados para el dominio *example.com* y sus subdominioes. Este role es un nombre lógico que mapea con la política usada para generar las credenciales que crearemos en el siguiente paso.
 
 ~~~
 / $ vault write pki/roles/example-dot-com \
@@ -238,26 +238,24 @@ allow_glob_domains                    false
 ......
 ~~~
 
-
-
-5 . Ahora definiremos una política la cual mapeará todas estas rutas donde se activará Openshift. Esta política se asociará después a una service account. 
+5 . Ahora definiremos una política que mapeará todas estas rutas donde se activará Openshift. Esta política se asociará después a una service account. 
 
 Aquí tan solo creamos la política que habilita el acceso a los secrets de nuestra PKI. 
 
 Estas rutas permiten al token ver todos los roles creados para el  PKI y acceder a las operaciones de firma y emisión para el rol example-dot-com.
 
 ~~~
-/ $ vault policy write pki - <<EOF
-> path "pki*"                        { capabilities = ["read", "list"] }
-> path "pki/roles/example-dot-com"   { capabilities = ["create", "update"] }
-> path "pki/sign/example-dot-com"    { capabilities = ["create", "update"] }
-> path "pki/issue/example-dot-com"   { capabilities = ["create"] }
-> EOF
+$ vault policy write pki - <<EOF
+path "pki*"                        { capabilities = ["read", "list"] }
+path "pki/roles/example-dot-com"   { capabilities = ["create", "update"] }
+path "pki/sign/example-dot-com"    { capabilities = ["create", "update"] }
+path "pki/issue/example-dot-com"   { capabilities = ["create"] }
+EOF
 Success! Uploaded policy: pki
 ~~~
 
 
-7 . Habilitamos en  Vault el métido de autenticación de kubernetes.
+7 . Habilitamos en  Vault el método de autenticación de kubernetes.
 
 ~~~
 vault auth enable kubernetesvault auth enable kubernetes
@@ -266,7 +264,7 @@ Success! Enabled kubernetes auth method at: kubernetes/
 ~~~
 
 
-8 . Configuamos el mético de autenticación de kubernetes para usar el token de la serviceaccoount, la api de kubernetes y su certificado
+8 . Configuamos el método de autenticación de kubernetes para usar el token de la serviceaccoount, la api de kubernetes y su certificado
 
 ~~~
  vault write auth/kubernetes/config \
@@ -277,10 +275,10 @@ Success! Data written to: auth/kubernetes/config
 ~~~
 
 
-9 . Finalmente createmos un role de autenticación de kubernetes que se vincula con la política y la service account llamada issuer.
-Esta issuer service account la utilizará posteriormente el cert-manager.
-El role conectar la service account,issuer, con el namespace donde queramos crear los certificados con la política de Vault, en este caso testcert.
-El token generado por Vault usado por la service account issuer será válido por 20 minutos.
+9 . Finalmente creamos un role de autenticación de kubernetes que se vincula con la política y la service account llamada issuer.
+Esta service account *issuer* la utilizará posteriormente el cert-manager.
+El role conectará la service account *issuer*, con el namespace donde queramos crear los certificados con la política de Vault, en este caso testcert.
+El token generado por Vault usado por la service account *issuer* será válido por 20 minutos.
 
 ~~~
 / $ vault write auth/kubernetes/role/issuer \
